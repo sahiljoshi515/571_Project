@@ -1,0 +1,110 @@
+Simphy Command for 4.1: This is the default command in the manual of Simphy.
+
+./simphy_mac64 
+    -sb f:0.000001 
+    -ld f:0.0000005 
+    -lb f:0.0000005 
+    -lt f:0.0000005 
+    -rs 100 
+    -rl U:10,100 
+    -rg 1 
+    -o default_test 
+    -sp f:10000 
+    -su f:0.00001 
+    -sg f:1 
+    -sl U:20,50 
+    -st f:1000000 
+    -om 1 
+    -v 2 
+    -od 1 
+    -op 1 
+    -oc 1 
+    -on 1 
+    -cs 22
+
+Indelible ctr file for 4.1: Modified the indelmodel/indelrate to get the estimate of CR.
+
+[TYPE] NUCLEOTIDE 1	//  EVERY control file must begin with a [TYPE] command.
+			//  The value can be NUCLEOTIDE, AMINOACID or CODON and the algorithm used.
+[SETTINGS]
+	[fastaextension]	fasta  // Simple option to show how INDELible settings can be used.
+
+[MODEL] complex_common	// Evolutionary models are defined in [MODEL] blocks, following the INDELible format, with the addition of the sampling notation from SimPhy
+	[submodel]	GTR $(rd:6,16,2,8,20,4) // GTR with rates from a Dirichlet (6,16,2,8,20,4) scaled with the last rate (5 parameters to INDELible)
+	[statefreq] $(d:1,1,1,1) // Equilibrium frequencies sampled from a Dirichlet (1,1,1,1)
+	[rates] 0 $(e:2) 0 // Site-specific rate heterogeneities: 0 p-inv, alpha from an E(2) and using a continuous gamma distribution.
+	[indelmodel] POW $(u:1.5,2) 10 // Zipfian distribution with its parameter from 1.5 to 2 and a fixed maximum indel size of 10 nucleotides.
+	[indelrate] $(u:0.001,0.002) // Insertion rate= deletion rate, and range from 0.001 to 0.002 times the substitution rate.
+	
+[SIMPHY-UNLINKED-MODEL]	simple_unlinked  	//  [UNLINKED-MODEL] blocks have the same options than [MODEL] blocks, but they will
+						// generate independent models (sampling the parameter values) for every tree using this section 
+	[submodel]    HKY $(e:1)          // HKY with kappa sampled for every tree from an E(1).
+  	[statefreq]   $(d:1,1,1,1)  // frequencies for T C A G sampled from a Dirichlet (1,1,1,1)
+
+
+[SIMPHY-PARTITIONS] simple [0.80 simple_unlinked $(n:1000,100)] //// The first half of the gene families will evolve under the model "simple_unlinked". Their sequence lengths are sampled from a Normal with mean=1000 and sd=100.
+[SIMPHY-PARTITIONS] complex [0.20 complex_common 500] // The rest of the trees will share the same model, "complex_common". Their root sequence lengths will be 500 bp in all cases.
+
+[SIMPHY-EVOLVE] 1 data // One sequence alignment for each gene tree, saved in files with "dataset" as common prefix (it will generate dataset_1, dataset_2, etc.)
+
+
+
+
+
+Simphy Command for 4.2: 
+
+./simphy_mac64 
+    -sb f:0.000001 
+    -ld f:0.0000005 
+    -lb f:0.0000005 
+    -lt f:0.0000005 
+    -rs 50 
+    -rl U:10,100 
+    -rg 1 
+    -o default_test 
+    -sp f:10000 
+    -su f:0.00001 // Vary this parameter
+    -sg f:1 
+    -sl U:20,50 
+    -st f:1000000 
+    -om 1 
+    -v 2 
+    -od 1 
+    -op 1 
+    -oc 1 
+    -on 1 
+    -cs 22
+
+
+Indelible ctr file for 4.2: Same as 4.1, kept the indelrate and indel model as shown above.
+
+
+Simphy Command for 4.3:
+
+./simphy_mac64 
+    -sb f:0.000001 
+    -ld f:0.0000005 
+    -lb f:0.0000005 
+    -lt f:0.0000005 
+    -rs 50 
+    -rl U:10,100 
+    -rg 1 
+    -o default 
+    -sp f:10000 
+    -su f:0.001 
+    -sg f:1 
+    -sl U:20,50 
+    -st f:1000000 
+    -om 1 
+    -v 2 
+    -od 1 
+    -op 1 
+    -oc 1 
+    -on 1 
+    -cs 22 
+    -lb f:0.00000000049 // Vary this parameter
+    -ld f:0.00000000049 // Vary this parameter
+    -lt f:0
+
+
+Indelible ctr file for 4.3: Same as 4.1, kept the indelrate and indel model as shown above.
